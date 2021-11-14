@@ -10,13 +10,13 @@ from typing import Union,List,Tuple,Dict,Optional
 from ..uploaders.rclone_uploader import RcloneUploader
 from ..status.ytdl_status import YTDLStatus
 from ..status.status_manager import StatusManager
-import youtube_dl
+import yt_dlp
 from ..utils.human_format import human_readable_bytes
 from ..core.getVars import get_val
 from ..core.base_task import BaseTask
 from functools import partial
 from PIL import Image
-from youtube_dl import YoutubeDL
+from yt_dlp import YoutubeDL
 from ..database.dbhandler import TtkUpload
 
 torlog = logging.getLogger(__name__)
@@ -270,7 +270,7 @@ async def handle_ytdl_playlist(e: MessageLike) -> None:
         return
     url = await e.get_reply_message()
     url = url.text.strip()
-    cmd = f"youtube-dl -i --flat-playlist --dump-single-json {url}"
+    cmd = f"yt-dlp -i --flat-playlist --dump-single-json {url}"
     
     tsp = time.time()
     buts = [[KeyboardButtonCallback("To Telegram",data=f"ytdlselect tg {tsp}")]]
@@ -494,7 +494,7 @@ class YTDLDownloader(BaseTask):
 
                 err = False
                 try:
-                    with youtube_dl.YoutubeDL(ytdl_opts) as ydl:
+                    with yt_dlp.YoutubeDL(ytdl_opts) as ydl:
                         loop = asyncio.get_event_loop()
                         await loop.run_in_executor(None, ydl.download,[yt_url])
                         
@@ -635,7 +635,7 @@ class PYTDLDownloader(BaseTask):
 
                 err = False
                 try:
-                    with youtube_dl.YoutubeDL(ytdl_opts) as ydl:
+                    with yt_dlp.YoutubeDL(ytdl_opts) as ydl:
                         loop = asyncio.get_event_loop()
                         await loop.run_in_executor(None, ydl.download,[url])
                         
@@ -684,7 +684,7 @@ class PYTDLDownloader(BaseTask):
                 err = False
 
                 try:
-                    with youtube_dl.YoutubeDL(ytdl_opts) as ydl:
+                    with yt_dlp.YoutubeDL(ytdl_opts) as ydl:
                         loop = asyncio.get_event_loop()
                         await loop.run_in_executor(None, ydl.download,[url])
                         
